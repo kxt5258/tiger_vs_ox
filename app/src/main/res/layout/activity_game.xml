@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background_board"
+    tools:context="com.kinley_tshering.tangbi.tigerox.GameActivity">
+
+    <com.kinley_tshering.tangbi.tigerox.GameBoard
+        android:id = "@+id/gameboard"
+        android:layout_width="match_parent"
+        android:layout_height="527dp"
+        android:layout_margin="10dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/frame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gameboard"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:padding="@dimen/activity_vertical_margin"
+        android:background="#cee4ce">
+
+        <Button
+            android:id="@+id/restartBtn"
+            android:layout_width="200dp"
+            android:layout_height="35dp"
+            android:onClick="buttonClick"
+            android:text="@string/reset"
+            android:background="@drawable/button_border"/>
+
+    </LinearLayout>
+</LinearLayout>

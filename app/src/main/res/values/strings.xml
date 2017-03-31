@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Tiger v Ox</string>
+    <string name="reset">Restart Game</string>
+    <string name="title_activity_help">Rules of the Game</string>
+    <string name="about_game">
+        <b>Game Background</b> \n\n
+        <p>སྟག་དང་ནོར (Tiger vs Oxes) is a classic Bhutanese board game played by two players. The board contains thirty seven (37) positions which are linked using lines. One of the players will play tiger (two in number) and the other will play oxes (twenty four in total). The tigers will be initially positioned at the entrance of the lair (triangles on the two sides) while four herds of six oxes each will be placed at the byres (center of each central squares).</p>
+    </string>
+    <string name="ox_movement">
+        \n<b>Valid Moves for Oxes</b>\n\n
+        <p>The main aim of oxes is to prevent the movement of tiger. Once they succeed in doing that, the player playing the oxes wins. \n</p>
+    </string>
+    <string name="ox_movement_detail">
+        <p>The following are the valid moves for player playing oxes:</p>\n\n
+            1. A player can move an ox to an adjacent empty position\n
+            2. A player can not stack the oxes once separated\n
+            3. A player can not move an ox into lair unless all the oxes had been separated\n
+    </string>
+    <string name="ox_image_desc">
+        <p>As shown in the figure, the valid moves for the ox (blue dot) are the positions with unfilled blue circles (pointed by the fingers). The unfilled red circles are position which the ox can not move.\n</p>
+    </string>
+    <string name="tiger_movement">
+        <b>Valid Moves for Tiger</b>\n\n
+        <p>The aim of tigers is to kill at least nineteen (19) oxes. The player playing tiger will win the game if only five oxes are left on the board. \n</p>
+    </string>
+    <string name="tiger_movement_detail">
+        <p>The following are the valid moves for player playing tigers:</p>\n\n
+            1. A player can move a tiger to an adjacent empty position\n
+            2. A player can not stack the tigers \n
+            3. A player can hop a tiger over one adjacent ox and move to an empty position along a straight line. This will kill the ox in the hopped position.\n
+            4. A player can not hop a tiger over a tiger.\n
+            5. A player can not move the tiger into the lair unless all oxes has been separated
+    </string>
+    <string name="tiger_image_desc">
+        <p>As shown in the figure, the valid moves for the tiger (red dot) are move to position I or hop over position E to D. The latter move kill the ox located at E.
+</p>
+    </string>
+    <string name="play_now">Play Now</string>
+    <string name="how_to_play">Game Rules</string>
+</resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#cee4ce"
+    tools:context="com.kinley_tshering.tangbi.tigerox.MainActivity">
+
+    <ImageView
+        android:id="@+id/tigerImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:src="@drawable/tiger"/>
+
+    <Button
+        android:id="@+id/buttonPlay"
+        android:text="@string/play_now"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_border"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@+id/tigerImage"/>
+
+    <Button
+        android:id="@+id/btnHelp"
+        android:text="@string/how_to_play"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:background="@drawable/button_border"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/buttonPlay"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ox"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
