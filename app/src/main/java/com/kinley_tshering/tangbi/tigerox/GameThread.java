@@ -15,7 +15,7 @@ import java.util.List;
 
 
 /**
- * Created by ktshering on 3/27/17.
+ * Created by Kinley Tshering on 3/27/17.
  */
 
 class GameThread implements View.OnTouchListener {
