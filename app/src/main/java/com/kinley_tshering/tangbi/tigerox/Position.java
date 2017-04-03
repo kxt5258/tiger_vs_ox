@@ -1,7 +1,7 @@
 package com.kinley_tshering.tangbi.tigerox;
 
 /**
- * Created by ktshering on 3/25/17.
+ * Created by Kinley Tshering on 3/25/17.
  */
 
 class Position {

@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
- * Created by ktshering on 3/24/17.
+ * Created by Kinley Tshering on 3/24/17.
  */
 
 public class GameBoard extends View {
@@ -121,7 +121,9 @@ public class GameBoard extends View {
         //DRAW possible moves
         if (!possibleMoves.isEmpty()) {
             for (int i: possibleMoves) {
-                canvas.drawCircle(positions.get(i).getX(), positions.get(i).getY(), 30, possiblePaint);
+                if (positions.get(i).getOccupiedBy() == 0) {
+                    canvas.drawCircle(positions.get(i).getX(), positions.get(i).getY(), 30, possiblePaint);
+                }
             }
             possibleMoves.clear();
         }

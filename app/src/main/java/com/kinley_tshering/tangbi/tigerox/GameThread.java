@@ -2,6 +2,7 @@ package com.kinley_tshering.tangbi.tigerox;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -274,6 +275,17 @@ class GameThread implements View.OnTouchListener {
                 break;
             }
         }
+
+        if (deadTiger.size() > 0) {
+            //If there is apossibility of clearing the way by moving the other tiger, dont kill it
+            for (int i: deadTiger) {
+                for(int k: getPossibleMoves(positions.get(i))) {
+                    if (positions.get(k).getOccupiedBy() == board.TIGER) {
+                        deadTiger.clear();
+                    }
+                }
+            }
+        }
         return deadTiger;
     }
 
@@ -309,7 +321,7 @@ class GameThread implements View.OnTouchListener {
             //if the player is playing tiger and chances of a kill
             if (position.getOccupiedBy() == board.TIGER && positions.get(i).getOccupiedBy() == board.OXEN) {
                 for (int j: neighbours[i]) {
-                    if (positions.get(j).getOccupiedBy() == 0) {
+                    if (positions.get(j).getOccupiedBy() != board.OXEN && j != position.getIndex()) {
                         if (this.checkValidTigerMove(position, positions.get(i), positions.get(j))) {
                             if (!(stacked && triangleList.contains(positions.get(j).getIndex()))) {
                                 possible.add(j);
