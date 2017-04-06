@@ -52,7 +52,7 @@ class Position {
      * @return x + margin
      */
     float getX() {
-        return x + 30;
+        return x + GameBoard.SIZE / 2;
     }
 
     /**
@@ -60,7 +60,7 @@ class Position {
      * @return y + margin
      */
     float getY() {
-        return y + 30;
+        return y + GameBoard.SIZE / 2;
     }
 
     /**

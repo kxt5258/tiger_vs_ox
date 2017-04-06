@@ -53,7 +53,7 @@ class GameThread implements View.OnTouchListener {
                     float dx = position.getX() - event.getX();
                     float dy = position.getY() - event.getY();
 
-                    if (Math.sqrt(dx * dx + dy * dy) <= 30) {
+                    if (Math.sqrt(dx * dx + dy * dy) <= GameBoard.SIZE / 2) {
                         if (stacked) {
                             this.checkStacked();
                         }
@@ -62,24 +62,24 @@ class GameThread implements View.OnTouchListener {
                                     if (!(stacked && triangleList.contains(position.getIndex()))) {
                                         if (firstClick.equals(position) || !(neighbours[firstClick.getIndex()].contains(position.getIndex()))) {
                                             int interIndex = checkJumpable(firstClick, position);
-                                            if (interIndex != -1 && positions.get(interIndex).getOccupiedBy() == board.OXEN) {
-                                                this.movePiece(board.TIGER, firstClick, position);
-                                                killPiece(board.OXEN, positions.get(interIndex));
+                                            if (interIndex != -1 && positions.get(interIndex).getOccupiedBy() == GameBoard.OXEN) {
+                                                this.movePiece(GameBoard.TIGER, firstClick, position);
+                                                killPiece(GameBoard.OXEN, positions.get(interIndex));
                                                 pieceSelected = false;
                                                 tigerTurn = false;
-                                                board.setTurn(board.OXEN);
+                                                board.setTurn(GameBoard.OXEN);
                                                 board.invalidate();
                                             }
                                         } else {
-                                            this.movePiece(board.TIGER, firstClick, position);
+                                            this.movePiece(GameBoard.TIGER, firstClick, position);
                                             pieceSelected = false;
                                             tigerTurn = false;
-                                            board.setTurn(board.OXEN);
+                                            board.setTurn(GameBoard.OXEN);
                                             board.invalidate();
                                         }
                                     }
                                 } else {
-                                    if (position.getOccupiedBy() == board.TIGER) {
+                                    if (position.getOccupiedBy() == GameBoard.TIGER) {
                                         pieceSelected = true;
                                         firstClick = position;
                                         board.setPossibleMoves(this.getPossibleMoves(position));
@@ -92,21 +92,21 @@ class GameThread implements View.OnTouchListener {
                                 if (pieceSelected && position.getOccupiedBy() == 0) {
                                     if (!(stacked && triangleList.contains(position.getIndex()))) {
                                         if (!(firstClick.equals(position)) && (neighbours[firstClick.getIndex()].contains(position.getIndex()))) {
-                                            this.movePiece(board.OXEN, firstClick, position);
+                                            this.movePiece(GameBoard.OXEN, firstClick, position);
                                             pieceSelected = false;
                                             tigerTurn = true;
-                                            board.setTurn(board.TIGER);
+                                            board.setTurn(GameBoard.TIGER);
                                             ArrayList<Integer> tigerValue = this.checkTigerLife();
                                             if (tigerValue.size() != 0) {
                                                 for (int tiger: tigerValue) {
-                                                    this.killPiece(board.TIGER, positions.get(tiger));
+                                                    this.killPiece(GameBoard.TIGER, positions.get(tiger));
                                                 }
                                             }
                                             board.invalidate();
                                         }
                                     }
                                 } else {
-                                    if (position.getOccupiedBy() == board.OXEN) {
+                                    if (position.getOccupiedBy() == GameBoard.OXEN) {
                                         pieceSelected = true;
                                         firstClick = position;
                                         board.setPossibleMoves(this.getPossibleMoves(position));
@@ -172,10 +172,10 @@ class GameThread implements View.OnTouchListener {
      */
     private void killPiece(int what, Position from) {
         from.setOccupancy(what, -1);
-        if (what == board.OXEN) {
+        if (what == GameBoard.OXEN) {
             numOxens--;
         }
-        else if (what == board.TIGER) {
+        else if (what == GameBoard.TIGER) {
             numTigers--;
         }
     }
@@ -240,7 +240,7 @@ class GameThread implements View.OnTouchListener {
         ArrayList<Integer> deadTiger = new ArrayList<Integer>();
 
         for (Position position: positions) {
-            if (position.getOccupiedBy() == board.TIGER) {
+            if (position.getOccupiedBy() == GameBoard.TIGER) {
                 tigerChecked += 1;
                 boolean validCell = false;
                 for(int i: neighbours[position.getIndex()]) {
@@ -280,7 +280,7 @@ class GameThread implements View.OnTouchListener {
             //If there is apossibility of clearing the way by moving the other tiger, dont kill it
             for (int i: deadTiger) {
                 for(int k: getPossibleMoves(positions.get(i))) {
-                    if (positions.get(k).getOccupiedBy() == board.TIGER) {
+                    if (positions.get(k).getOccupiedBy() == GameBoard.TIGER) {
                         deadTiger.clear();
                     }
                 }
@@ -319,9 +319,9 @@ class GameThread implements View.OnTouchListener {
             }
 
             //if the player is playing tiger and chances of a kill
-            if (position.getOccupiedBy() == board.TIGER && positions.get(i).getOccupiedBy() == board.OXEN) {
+            if (position.getOccupiedBy() == GameBoard.TIGER && positions.get(i).getOccupiedBy() == GameBoard.OXEN) {
                 for (int j: neighbours[i]) {
-                    if (positions.get(j).getOccupiedBy() != board.OXEN && j != position.getIndex()) {
+                    if (positions.get(j).getOccupiedBy() != GameBoard.OXEN && j != position.getIndex()) {
                         if (this.checkValidTigerMove(position, positions.get(i), positions.get(j))) {
                             if (!(stacked && triangleList.contains(positions.get(j).getIndex()))) {
                                 possible.add(j);
@@ -334,12 +334,4 @@ class GameThread implements View.OnTouchListener {
         return possible;
     }
 
-    /**
-     *
-     * @return the position of the move
-     */
-    private int getMove() {
-
-        return 0;
-    }
 }

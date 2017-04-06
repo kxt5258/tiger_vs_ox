@@ -2,6 +2,8 @@ package com.kinley_tshering.tangbi.tigerox;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -20,21 +22,18 @@ import java.util.LinkedList;
 
 public class GameBoard extends View {
 
-    private Context context;
-    Paint linePaint, tigerPaint, oxenPaint, textPaint, possiblePaint;
+    Paint linePaint, textPaint, possiblePaint;
     private Canvas c;
     private ArrayList<Position> positions;
     private LinkedList<Integer> neighbours[];
     private ArrayList<Integer> possibleMoves;
+    Bitmap tigerPiece, oxPiece;
     private boolean initialized = false;
-    final int OXEN = 2;
-    final int TIGER = 1;
+    static final int OXEN = 2, TIGER = 1, SIZE = 70;
     private int turn;
 
-    public GameBoard(Context c, AttributeSet a) {
-        super(c, a);
-        context = c;
-
+    public GameBoard(Context context, AttributeSet a) {
+        super(context, a);
         this.linkPositions();
         possibleMoves = new ArrayList<>();
         this.turn = 1;
@@ -47,15 +46,6 @@ public class GameBoard extends View {
         linePaint.setStrokeWidth(4f);
         linePaint.setTextSize(30);
 
-        tigerPaint = new Paint();
-        tigerPaint.setColor(Color.RED);
-        tigerPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        tigerPaint.setShader(new LinearGradient(30, 30, 30, getHeight(), Color.RED, Color.WHITE, Shader.TileMode.MIRROR));
-
-        oxenPaint = new Paint();
-        oxenPaint.setColor(Color.BLUE);
-        oxenPaint.setShader(new LinearGradient(10, 10, 30, getHeight(), Color.BLUE, Color.BLACK, Shader.TileMode.REPEAT));
-
         possiblePaint = new Paint();
         possiblePaint.setColor(Color.WHITE);
         possiblePaint.setStyle(Paint.Style.STROKE);
@@ -65,6 +55,9 @@ public class GameBoard extends View {
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(50);
+
+        oxPiece = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ox_piece), GameBoard.SIZE, GameBoard.SIZE, false);
+        tigerPiece = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.tiger_piece), GameBoard.SIZE, GameBoard.SIZE, false);
 
         this.setOnTouchListener(new GameThread(this, neighbours));
     }
@@ -95,26 +88,26 @@ public class GameBoard extends View {
             }
         }
 
-        if (turn == this.OXEN) {
-            canvas.drawCircle(30, this.getHeight() / 12, 30, oxenPaint);
-            canvas.drawText("\'s Turn", 60, this.getHeight() / 12 + 20, textPaint);
+        if (turn == GameBoard.OXEN) {
+            canvas.drawBitmap(oxPiece, 0, this.getHeight() / 12 - GameBoard.SIZE / 2, textPaint);
+            canvas.drawText("\'s Turn", GameBoard.SIZE, this.getHeight() / 12 + 20, textPaint);
         }
 
-        else if (turn == this.TIGER) {
-            canvas.drawCircle(30, this.getHeight() / 12, 30, tigerPaint);
-            canvas.drawText("\'s Turn", 60, this.getHeight() / 12 + 20, textPaint);
+        else if (turn == GameBoard.TIGER) {
+            canvas.drawBitmap(tigerPiece, 0, this.getHeight() / 12 - GameBoard.SIZE / 2, textPaint);
+            canvas.drawText("\'s Turn", GameBoard.SIZE, this.getHeight() / 12 + 20, textPaint);
         }
 
         //DRAW the OXENS and TIGERS
         for (Position a: occupiedPositions) {
-            if (a.getOccupiedBy() == this.OXEN) {
-                canvas.drawCircle(a.getX(), a.getY(), 30, oxenPaint);
+            if (a.getOccupiedBy() == GameBoard.OXEN) {
+                canvas.drawBitmap(oxPiece, a.getX() - GameBoard.SIZE / 2, a.getY() - GameBoard.SIZE / 2, textPaint);
                 if (a.getNumber() > 1) {
                     canvas.drawText("" + a.getNumber(), a.getX() - 15, a.getY() + 15, textPaint);
                 }
             }
-            else if (a.getOccupiedBy() == this.TIGER) {
-                canvas.drawCircle(a.getX(), a.getY(), 30, tigerPaint);
+            else if (a.getOccupiedBy() == GameBoard.TIGER) {
+                canvas.drawBitmap(tigerPiece, a.getX() - GameBoard.SIZE / 2, a.getY() - GameBoard.SIZE / 2, textPaint);
             }
         }
 
@@ -122,7 +115,7 @@ public class GameBoard extends View {
         if (!possibleMoves.isEmpty()) {
             for (int i: possibleMoves) {
                 if (positions.get(i).getOccupiedBy() == 0) {
-                    canvas.drawCircle(positions.get(i).getX(), positions.get(i).getY(), 30, possiblePaint);
+                    canvas.drawCircle(positions.get(i).getX(), positions.get(i).getY(), GameBoard.SIZE / 2, possiblePaint);
                 }
             }
             possibleMoves.clear();
@@ -143,8 +136,8 @@ public class GameBoard extends View {
     private void initializeBoard() {
 
         positions = new ArrayList<Position>(37);
-        float width = (this.getWidth() - 60 )/4;
-        float height = (this.getHeight() - 60)/6;
+        float width = (this.getWidth() - GameBoard.SIZE)/4;
+        float height = (this.getHeight() - GameBoard.SIZE)/6;
 
         positions.add(new Position(0, width, 0));
         positions.add(new Position(1, width * 2, 0));
@@ -174,18 +167,18 @@ public class GameBoard extends View {
      * place the two tigers at their start position
      */
     private void initializeTiger() {
-        positions.get(8).setOccupancy(this.TIGER,1);
-        positions.get(28).setOccupancy(this.TIGER,1);
+        positions.get(8).setOccupancy(GameBoard.TIGER,1);
+        positions.get(28).setOccupancy(GameBoard.TIGER,1);
     }
 
     /**
      * Place the Oxes at their start position
      */
     private void initializeOxens() {
-        positions.get(12).setOccupancy(this.OXEN, 6);
-        positions.get(14).setOccupancy(this.OXEN, 6);
-        positions.get(22).setOccupancy(this.OXEN, 6);
-        positions.get(24).setOccupancy(this.OXEN, 6);
+        positions.get(12).setOccupancy(GameBoard.OXEN, 6);
+        positions.get(14).setOccupancy(GameBoard.OXEN, 6);
+        positions.get(22).setOccupancy(GameBoard.OXEN, 6);
+        positions.get(24).setOccupancy(GameBoard.OXEN, 6);
     }
 
     /**
