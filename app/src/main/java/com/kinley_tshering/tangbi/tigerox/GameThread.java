@@ -158,7 +158,7 @@ class GameThread implements View.OnTouchListener {
         TextView messageView = (TextView)builder.findViewById(android.R.id.message);
         messageView.setGravity(Gravity.CENTER);
 
-        Button button = (Button) builder.getButton(AlertDialog.BUTTON_NEUTRAL);
+        Button button = builder.getButton(AlertDialog.BUTTON_NEUTRAL);
         button.setWidth(2000);
         button.setHeight(80);
 
@@ -332,5 +332,14 @@ class GameThread implements View.OnTouchListener {
             }
         }
         return possible;
+    }
+
+    /**
+     *
+     * @return the position of the move
+     */
+    private int getMove() {
+
+        return 0;
     }
 }
