@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -302,16 +303,19 @@ class GameThread implements View.OnTouchListener {
 
         if (deadTiger.size() > 0) {
             //If there is a possibility of clearing the way by moving the other tiger, dont kill it
-            int bothDead = 0;
-            for (int i: deadTiger) {
+            int tigers = 0;
+            for (Iterator<Integer> iterator = deadTiger.iterator(); iterator.hasNext();) {
+                int i = iterator.next();
                 for(Move k: getPossibleMoves(positions.get(i))) {
                     if (k.getTo().getOccupiedBy() == GameBoard.TIGER) {
-                        bothDead++;
+                        iterator.remove();
+                        tigers++;
                     }
                 }
             }
-            if (bothDead < 2) {
-                deadTiger.clear();
+
+            if (tigers == 2) {
+                this.numTigers = 0;
             }
         }
         return deadTiger;

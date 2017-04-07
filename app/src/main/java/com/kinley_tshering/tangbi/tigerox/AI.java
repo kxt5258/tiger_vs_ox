@@ -176,7 +176,12 @@ public class AI {
                 }
             }
             //THIS EVALUATION FUNCTION NEEDS WORK
-            score = score + numTigers * 500 + (int) (10000 / numOx + 1) - stacked * 500;
+            if (agentPlayer == GameBoard.TIGER) {
+                score = score + numTigers * 500 + (int) (10000 / numOx + 1) - stacked * 500;
+            }
+            else {
+                score = score + (int) (1000 / numTigers + 1) + 50 * numOx + stacked * 100;
+            }
         }
 
         if (agentPlayer == 0) {

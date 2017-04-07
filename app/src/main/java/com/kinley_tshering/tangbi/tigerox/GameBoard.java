@@ -31,7 +31,7 @@ public class GameBoard extends View {
     private boolean initialized = false;
     static final int EMPTY = -1, TIGER = 0, OXEN = 1, SIZE = 70;
     private int turn;
-    private int aiPlayer = GameBoard.EMPTY;
+    private int aiPlayer = GameBoard.TIGER;
 
     public GameBoard(Context context, AttributeSet a) {
         super(context, a);
