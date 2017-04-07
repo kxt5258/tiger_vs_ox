@@ -6,20 +6,28 @@ package com.kinley_tshering.tangbi.tigerox;
 
 class Position {
     private float x, y;
-    //occupiedBy 1 = tiger, 2 = oxen
+    //occupiedBy -1 = empty, 0 = tiger, 1 = oxen
     private int index, occupiedBy, number;
 
     Position(int i, float _x, float _y) {
         index = i;
         x = _x;
         y = _y;
-        occupiedBy = 0;
+        occupiedBy = GameBoard.EMPTY;
         number = 0;
+    }
+
+    Position(Position position) {
+        index = position.getIndex();
+        x = position.getX();
+        y = position.getY();
+        occupiedBy = position.getOccupiedBy();
+        number = position.getNumber();
     }
 
     /**
      * what is occupying the position
-     * @return OX (2) or TIGER (1)
+     * @return OX (1) or TIGER (0)
      */
     int getOccupiedBy() {
         return occupiedBy;
@@ -43,7 +51,7 @@ class Position {
         number += _number;
 
         if (number == 0) {
-            occupiedBy = 0;
+            occupiedBy = GameBoard.EMPTY;
         }
     }
 

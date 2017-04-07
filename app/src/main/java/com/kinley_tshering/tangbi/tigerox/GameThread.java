@@ -31,6 +31,7 @@ class GameThread implements View.OnTouchListener {
     private boolean stacked;
     //positions inside the lair
     private List triangleList;
+    AI ai = null;
 
     GameThread(GameBoard b, LinkedList<Integer>[] link) {
         board = b;
@@ -58,38 +59,59 @@ class GameThread implements View.OnTouchListener {
                             this.checkStacked();
                         }
                          if (tigerTurn) {
-                                if (pieceSelected && position.getOccupiedBy() == 0) {
-                                    if (!(stacked && triangleList.contains(position.getIndex()))) {
-                                        if (firstClick.equals(position) || !(neighbours[firstClick.getIndex()].contains(position.getIndex()))) {
-                                            int interIndex = checkJumpable(firstClick, position);
-                                            if (interIndex != -1 && positions.get(interIndex).getOccupiedBy() == GameBoard.OXEN) {
-                                                this.movePiece(GameBoard.TIGER, firstClick, position);
-                                                killPiece(GameBoard.OXEN, positions.get(interIndex));
-                                                pieceSelected = false;
-                                                tigerTurn = false;
-                                                board.setTurn(GameBoard.OXEN);
-                                                board.invalidate();
-                                            }
-                                        } else {
-                                            this.movePiece(GameBoard.TIGER, firstClick, position);
-                                            pieceSelected = false;
-                                            tigerTurn = false;
-                                            board.setTurn(GameBoard.OXEN);
-                                            board.invalidate();
-                                        }
-                                    }
-                                } else {
-                                    if (position.getOccupiedBy() == GameBoard.TIGER) {
-                                        pieceSelected = true;
-                                        firstClick = position;
-                                        board.setPossibleMoves(this.getPossibleMoves(position));
-                                        board.invalidate();
-                                    }
-                                }
+                             if (board.getAiPlayer() == GameBoard.TIGER) {
+                                 if (ai == null) {
+                                     ai = new AI(this);
+                                 }
+
+                                 Action action = ai.bestAction(new GameState(positions, GameBoard.EMPTY), GameBoard.TIGER);
+
+                                 if (!action.getMove().equals(new Move(null,null,null))) {
+                                     Move move = action.getMove();
+                                     this.movePiece(GameBoard.TIGER, move.getFrom(), move.getTo());
+                                     if (move.getMiddle() != null && move.getMiddle().getOccupiedBy() == GameBoard.OXEN) {
+                                         this.killPiece(GameBoard.OXEN, move.getMiddle());
+                                     }
+                                     tigerTurn = false;
+                                     board.setTurn(GameBoard.OXEN);
+                                     board.invalidate();
+                                 }
+                             }
+                             else {
+
+                                 if (pieceSelected && position.getOccupiedBy() == GameBoard.EMPTY) {
+                                     if (!(stacked && triangleList.contains(position.getIndex()))) {
+                                         if (firstClick.equals(position) || !(neighbours[firstClick.getIndex()].contains(position.getIndex()))) {
+                                             int interIndex = checkJumpable(firstClick, position);
+                                             if (interIndex != -1 && positions.get(interIndex).getOccupiedBy() == GameBoard.OXEN) {
+                                                 this.movePiece(GameBoard.TIGER, firstClick, position);
+                                                 this.killPiece(GameBoard.OXEN, positions.get(interIndex));
+                                                 pieceSelected = false;
+                                                 tigerTurn = false;
+                                                 board.setTurn(GameBoard.OXEN);
+                                                 board.invalidate();
+                                             }
+                                         } else {
+                                             this.movePiece(GameBoard.TIGER, firstClick, position);
+                                             pieceSelected = false;
+                                             tigerTurn = false;
+                                             board.setTurn(GameBoard.OXEN);
+                                             board.invalidate();
+                                         }
+                                     }
+                                 } else {
+                                     if (position.getOccupiedBy() == GameBoard.TIGER) {
+                                         pieceSelected = true;
+                                         firstClick = position;
+                                         board.setPossibleMoves(this.getPossibleMoves(position));
+                                         board.invalidate();
+                                     }
+                                 }
+                             }
                             }
                             //Ox Turn
                             else {
-                                if (pieceSelected && position.getOccupiedBy() == 0) {
+                                if (pieceSelected && position.getOccupiedBy() == GameBoard.EMPTY) {
                                     if (!(stacked && triangleList.contains(position.getIndex()))) {
                                         if (!(firstClick.equals(position)) && (neighbours[firstClick.getIndex()].contains(position.getIndex()))) {
                                             this.movePiece(GameBoard.OXEN, firstClick, position);
@@ -144,7 +166,7 @@ class GameThread implements View.OnTouchListener {
             return gameOver;
         }
 
-        board.setTurn(0);
+        board.setTurn(GameBoard.EMPTY);
         AlertDialog builder = new AlertDialog.Builder(board.getContext()).create();
         builder.setMessage("Congratulations! \n" + winner + " WON");
         builder.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
@@ -156,7 +178,9 @@ class GameThread implements View.OnTouchListener {
         builder.show();
 
         TextView messageView = (TextView)builder.findViewById(android.R.id.message);
-        messageView.setGravity(Gravity.CENTER);
+        if (messageView != null) {
+            messageView.setGravity(Gravity.CENTER);
+        }
 
         Button button = builder.getButton(AlertDialog.BUTTON_NEUTRAL);
         button.setWidth(2000);
@@ -244,7 +268,7 @@ class GameThread implements View.OnTouchListener {
                 tigerChecked += 1;
                 boolean validCell = false;
                 for(int i: neighbours[position.getIndex()]) {
-                    if (positions.get(i).getOccupiedBy() == 0) {
+                    if (positions.get(i).getOccupiedBy() == GameBoard.EMPTY) {
                         if (!(triangleList.contains(i) && stacked)) {
                             validCell = true;
                             break;
@@ -255,7 +279,7 @@ class GameThread implements View.OnTouchListener {
                     for (int j: neighbours[i]) {
                         //don't check for the tiger position with itself
                         if (j != position.getIndex()) {
-                            if (checkValidTigerMove(position, positions.get(i), positions.get(j)) && positions.get(j).getOccupiedBy() == 0) {
+                            if (checkValidTigerMove(position, positions.get(i), positions.get(j)) && positions.get(j).getOccupiedBy() == GameBoard.EMPTY) {
                                 if (!(triangleList.contains(i) && stacked)) {
                                     validCell = true;
                                     break;
@@ -277,13 +301,17 @@ class GameThread implements View.OnTouchListener {
         }
 
         if (deadTiger.size() > 0) {
-            //If there is apossibility of clearing the way by moving the other tiger, dont kill it
+            //If there is a possibility of clearing the way by moving the other tiger, dont kill it
+            int bothDead = 0;
             for (int i: deadTiger) {
-                for(int k: getPossibleMoves(positions.get(i))) {
-                    if (positions.get(k).getOccupiedBy() == GameBoard.TIGER) {
-                        deadTiger.clear();
+                for(Move k: getPossibleMoves(positions.get(i))) {
+                    if (k.getTo().getOccupiedBy() == GameBoard.TIGER) {
+                        bothDead++;
                     }
                 }
+            }
+            if (bothDead < 2) {
+                deadTiger.clear();
             }
         }
         return deadTiger;
@@ -309,12 +337,12 @@ class GameThread implements View.OnTouchListener {
      * @param position the current position
      * @return an arraylist of all possible moves
      */
-    private ArrayList<Integer> getPossibleMoves(Position position) {
-        ArrayList<Integer> possible = new ArrayList<>();
+    protected ArrayList<Move> getPossibleMoves(Position position) {
+        ArrayList<Move> possible = new ArrayList<>();
         for (int i: neighbours[position.getIndex()]) {
-            if (positions.get(i).getOccupiedBy() == 0) {
+            if (positions.get(i).getOccupiedBy() != GameBoard.OXEN) {
                 if (!(stacked && triangleList.contains(positions.get(i).getIndex()))) {
-                    possible.add(i);
+                    possible.add(new Move(position, positions.get(i), null));
                 }
             }
 
@@ -324,7 +352,7 @@ class GameThread implements View.OnTouchListener {
                     if (positions.get(j).getOccupiedBy() != GameBoard.OXEN && j != position.getIndex()) {
                         if (this.checkValidTigerMove(position, positions.get(i), positions.get(j))) {
                             if (!(stacked && triangleList.contains(positions.get(j).getIndex()))) {
-                                possible.add(j);
+                                possible.add(new Move(position, positions.get(j), positions.get(i)));
                             }
                         }
                     }

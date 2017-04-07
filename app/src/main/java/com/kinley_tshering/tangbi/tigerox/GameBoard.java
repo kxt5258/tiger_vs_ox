@@ -26,17 +26,18 @@ public class GameBoard extends View {
     private Canvas c;
     private ArrayList<Position> positions;
     private LinkedList<Integer> neighbours[];
-    private ArrayList<Integer> possibleMoves;
+    private ArrayList<Move> possibleMoves;
     Bitmap tigerPiece, oxPiece;
     private boolean initialized = false;
-    static final int OXEN = 2, TIGER = 1, SIZE = 70;
+    static final int EMPTY = -1, TIGER = 0, OXEN = 1, SIZE = 70;
     private int turn;
+    private int aiPlayer = GameBoard.EMPTY;
 
     public GameBoard(Context context, AttributeSet a) {
         super(context, a);
         this.linkPositions();
         possibleMoves = new ArrayList<>();
-        this.turn = 1;
+        this.turn = GameBoard.TIGER;
 
         linePaint = new Paint();
         linePaint.setAntiAlias(true);
@@ -83,7 +84,7 @@ public class GameBoard extends View {
                 canvas.drawLine(position.getX(), position.getY(), positions.get(j).getX(), positions.get(j).getY(), linePaint);
             }
             //canvas.drawText("" + position.getIndex(), position.getX() - 15, position.getY() + 15, textPaint);
-            if (position.getOccupiedBy() != 0) {
+            if (position.getOccupiedBy() != GameBoard.EMPTY) {
                 occupiedPositions.add(position);
             }
         }
@@ -113,9 +114,9 @@ public class GameBoard extends View {
 
         //DRAW possible moves
         if (!possibleMoves.isEmpty()) {
-            for (int i: possibleMoves) {
-                if (positions.get(i).getOccupiedBy() == 0) {
-                    canvas.drawCircle(positions.get(i).getX(), positions.get(i).getY(), GameBoard.SIZE / 2, possiblePaint);
+            for (Move i: possibleMoves) {
+                if (i.getTo().getOccupiedBy() == GameBoard.EMPTY) {
+                    canvas.drawCircle(i.getTo().getX(), i.getTo().getY(), GameBoard.SIZE / 2, possiblePaint);
                 }
             }
             possibleMoves.clear();
@@ -395,8 +396,15 @@ public class GameBoard extends View {
      * Set the possible moves of currently selected position
      * @param input arraylist of possible moves
      */
-    public void setPossibleMoves(ArrayList<Integer> input) {
+    public void setPossibleMoves(ArrayList<Move> input) {
         possibleMoves = input;
     }
 
+    public int getAiPlayer() {
+        return this.aiPlayer;
+    }
+
+    public void setAiPlayer(int aiPlayer) {
+        this.aiPlayer = aiPlayer;
+    }
 }
